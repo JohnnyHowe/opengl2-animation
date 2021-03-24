@@ -9,6 +9,8 @@
 // 
 // wasd keys work for movement too
 //
+// r key resets camera position and angle
+//
 //  FILE NAME: Teapot.cpp
 //  See Lab01.pdf for details
 //  ========================================================================
@@ -20,16 +22,19 @@
 # define PI           3.14159265358979323846
 using namespace std; 
 
+// Timing thing
+float timer = 0;
+float dt = 0.1;	// seconds
 
 // Camera things
-float cameraPosition[3] = { 0, 10, 0 };
-float cameraDirectionOffset[3] = { 0, -0.5, 0 };
-float cameraAngle = 0;
+float cameraPositionDefault[3] = {0, 10, 0 };
+float cameraPosition[3] = {0, 0, 0 };
+float cameraAngle[2] = { 0, 0 };	// Horizontal and vertical in radians
 float rotationSpeed = 0.1;
 
 // Vase things
 const int vasePoints = 50;  // Total number of vertices on the base curve
-
+ 
 float vasex_init[vasePoints] = { 0, 8, 8, 7.5, 6.7, 5, 5.5, 4, 4, 5, 5.6, 6.1, 6.8, 7.1, 7.5, 8, 8.4, 8.7, 9, 9.3,
                       9.8, 10, 10.2, 10.4, 10.6, 10.9, 11, 11.1, 11.2, 11.3, 11.4, 11.3, 11.2, 11.1, 11, 10.5, 9.5, 8.2, 7, 6.2,
                       6, 6.2, 6.8, 7.6, 8.5, 7, 6.1, 5.3, 4.7, 4.5 };
@@ -37,6 +42,12 @@ float vasey_init[vasePoints] = { 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
                       19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
                       39, 40, 41, 42, 43, 43, 42, 41, 40, 39 };
 float vasez_init[vasePoints] = { 0 };
+
+float vaseRotationOrigin[3] = { 0, 10, 0 };
+float vasePosition[3];
+float vaseRotationRadius = 10;
+float vaseSpeedMultiplier = 0.1;
+
 
 // ================================================================================================
 // Math
@@ -61,49 +72,100 @@ void normal(float x1, float y1, float z1,
 void specialHandler(int key, int x, int y) {
 	if (key == GLUT_KEY_UP) {
 		// move forward
-		cameraPosition[0] += cos(cameraAngle);
-		cameraPosition[2] += sin(cameraAngle);
+		cameraPosition[0] += cos(cameraAngle[0]);
+		cameraPosition[2] += sin(cameraAngle[0]);
 	}
 	if (key == GLUT_KEY_DOWN) {
 		// move back
-		cameraPosition[0] -= cos(cameraAngle);
-		cameraPosition[2] -= sin(cameraAngle);
+		cameraPosition[0] -= cos(cameraAngle[0]);
+		cameraPosition[2] -= sin(cameraAngle[0]);
 	}
 	if (key == GLUT_KEY_LEFT) {
 		// look left
-		cameraAngle = fmod(cameraAngle - rotationSpeed, PI * 2);
+		cameraAngle[0] = fmod(cameraAngle[0] - rotationSpeed, PI * 2);
 	}
 	if (key == GLUT_KEY_RIGHT) {
 		// look right
-		cameraAngle = fmod(cameraAngle + rotationSpeed, PI * 2);
+		cameraAngle[0] = fmod(cameraAngle[0] + rotationSpeed, PI * 2);
 	}
-	glutPostRedisplay();
 }
 
 void keyHandler(unsigned char key, int x, int y) {
 	if (key == 'w') {
-		cameraPosition[0] += cos(cameraAngle);
-		cameraPosition[2] += sin(cameraAngle);
+		cameraPosition[0] += cos(cameraAngle[0]);
+		cameraPosition[2] += sin(cameraAngle[0]);
 	}
 	if (key == 's') {
-		cameraPosition[0] -= cos(cameraAngle);
-		cameraPosition[2] -= sin(cameraAngle);
+		cameraPosition[0] -= cos(cameraAngle[0]);
+		cameraPosition[2] -= sin(cameraAngle[0]);
 	}
 	if (key == 'a') {
-		cameraPosition[0] += cos(cameraAngle - PI / 2.0);
-		cameraPosition[2] += sin(cameraAngle - PI / 2.0);
+		cameraPosition[0] += cos(cameraAngle[0] - PI / 2.0);
+		cameraPosition[2] += sin(cameraAngle[0] - PI / 2.0);
 	}
 	if (key == 'd') {
-		cameraPosition[0] += cos(cameraAngle + PI / 2.0);
-		cameraPosition[2] += sin(cameraAngle + PI / 2.0);
+		cameraPosition[0] += cos(cameraAngle[0] + PI / 2.0);
+		cameraPosition[2] += sin(cameraAngle[0] + PI / 2.0);
 	}
-	glutPostRedisplay();
+	if (key == 'r') {
+		cameraPosition[0] = cameraPositionDefault[0];
+		cameraPosition[1] = cameraPositionDefault[1];
+		cameraPosition[2] = cameraPositionDefault[2];
+		cameraAngle[0] = 0;
+		cameraAngle[1] = 0;
+	}
+	if (key == '8') {
+		cameraAngle[1] += rotationSpeed;
+	}
+	if (key == '5') {
+		cameraAngle[1] -= rotationSpeed;
+	}
+	if (key == '4') {
+		cameraAngle[0] -= rotationSpeed;
+	}
+	if (key == '6') {
+		cameraAngle[0] += rotationSpeed;
+	}
 }
 
+// ================================================================================================
+// Animating
+// ================================================================================================
+void moveObjects() {
+	// vase
+	vasePosition[0] = vaseRotationOrigin[0] + sin(timer * vaseSpeedMultiplier) * vaseRotationRadius;
+	vasePosition[1] = vaseRotationOrigin[1] + (-cos(timer * vaseSpeedMultiplier * 2) * 0.5 - 1) * vaseRotationRadius;
+	vasePosition[2] = vaseRotationOrigin[2];
+}
+
+void timerFunc(int x) {
+	moveObjects();
+	timer += dt;
+	glutTimerFunc(1 / dt, timerFunc, 0);
+	glutPostRedisplay();
+}
 
 // ================================================================================================
 // Drawing
 // ================================================================================================
+
+void drawAxes(float axisLength=10) {
+    glColor3f(1.0, 0.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 0);
+	glVertex3f(axisLength, 0, 0);
+	glEnd();
+    glColor3f(0.0, 1.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, axisLength, 0);
+	glEnd();
+    glColor3f(0.0, 0.0, 1.0);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 0, axisLength);
+	glEnd();
+}
 
 
 /// <summary>
@@ -156,7 +218,7 @@ void drawVase() {
 //--Draws a grid of lines on the floor plane -------------------------------
 void drawFloor()
 {
-	glColor3f(0., 0.5,  0.);			//Floor colour
+	glColor3f(0.4, 0.8,  0.4);			//Floor colour
 	for(int i = -50; i <= 50; i ++)
 	{
 		glBegin(GL_LINES);			//A set of grid lines on the xz-plane
@@ -183,9 +245,9 @@ void display(void)
 		cameraPosition[0], 
 		cameraPosition[1],
 		cameraPosition[2],
-		cameraPosition[0] + cos(cameraAngle) + cameraDirectionOffset[0],
-		cameraPosition[1] + cameraDirectionOffset[1],
-		cameraPosition[2] + sin(cameraAngle) + cameraDirectionOffset[2], 
+		cameraPosition[0] + cos(cameraAngle[0]),
+		cameraPosition[1] + cameraAngle[1],
+		cameraPosition[2] + sin(cameraAngle[0]), 
 		0,
 		1,
 		0);  //Camera position and orientation
@@ -194,14 +256,18 @@ void display(void)
 
 	glDisable(GL_LIGHTING);			//Disable lighting when drawing floor.
     drawFloor();
+	drawAxes();
 
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
     glColor3f(0.0, 1.0, 1.0);
-    // glutSolidTeapot(1.0);
 
-	glScalef(1, 3, 1);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glPushMatrix();
+	glTranslatef(vasePosition[0], vasePosition[1], vasePosition[2]);
+	glScalef(1, 3, 1);
 	drawVase();
+	glPopMatrix();
 
 	glFlush(); 
 } 
@@ -213,6 +279,11 @@ void display(void)
 void initialize(void)
 {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	cameraPosition[0] = cameraPositionDefault[0];
+	cameraPosition[1] = cameraPositionDefault[1];
+	cameraPosition[2] = cameraPositionDefault[2];
+	cameraAngle[0] = 0;
+	cameraAngle[1] = 0;
 
 	glEnable(GL_LIGHTING);		//Enable OpenGL states
 	glEnable(GL_LIGHT0);
@@ -236,9 +307,10 @@ int main(int argc, char **argv)
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Ooooh Aaaah");
 	initialize();
-	glutDisplayFunc(display);
 	glutSpecialFunc(specialHandler);
 	glutKeyboardFunc(keyHandler);
+	timerFunc(0);
+	glutDisplayFunc(display);
 	glutMainLoop();
 	return 0; 
 }
