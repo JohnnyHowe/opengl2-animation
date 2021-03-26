@@ -33,6 +33,7 @@ float dt = 0.1;	// seconds
 
 // Camera things
 float cameraPositionDefault[3] = {0, 10, 40 };
+float cameraAngleDefault[2] = { -PI / 2, 0 };
 float cameraPosition[3] = {0, 0, 0 };
 float cameraAngle[2] = { 0, 0 };	// Horizontal and vertical in radians
 float rotationSpeed = 0.1;
@@ -115,8 +116,8 @@ void keyHandler(unsigned char key, int x, int y) {
 		cameraPosition[0] = cameraPositionDefault[0];
 		cameraPosition[1] = cameraPositionDefault[1];
 		cameraPosition[2] = cameraPositionDefault[2];
-		cameraAngle[0] = -PI / 2;
-		cameraAngle[1] = 0;
+		cameraAngle[0] = cameraAngleDefault[0];
+		cameraAngle[1] = cameraAngleDefault[1];
 		timer = 0;
 	}
 	if (key == '8') {
@@ -141,12 +142,12 @@ void moveObjects() {
 	//vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * vaseRotationRadius;
 	//vasePosition[1] = vaseRotationOrigin[1] + cos(timer) * vaseRotationRadius;
 
-	float ai = (PI / 4);
+	float ai = (PI / 3);
 	float omega = sqrt(GRAVITY / vaseRotationRadius);
 
 	float angle = ai * cos(omega * timer);
 
-	vaseRotation = angle * 180 / PI;
+	vaseRotation = angle * 180 / PI + 90;
 
 	vasePosition[0] = -cos(angle + PI / 2) * vaseRotationRadius + vaseRotationOrigin[0];
 	vasePosition[1] = -sin(angle + PI / 2) * vaseRotationRadius + vaseRotationOrigin[1];
@@ -300,8 +301,8 @@ void initialize(void)
 	cameraPosition[0] = cameraPositionDefault[0];
 	cameraPosition[1] = cameraPositionDefault[1];
 	cameraPosition[2] = cameraPositionDefault[2];
-	cameraAngle[0] = 0;
-	cameraAngle[1] = 0;
+	cameraAngle[0] = cameraAngleDefault[0];
+	cameraAngle[1] = cameraAngleDefault[1];
 
 	glEnable(GL_LIGHTING);		//Enable OpenGL states
 	glEnable(GL_LIGHT0);
