@@ -23,11 +23,13 @@
 using namespace std; 
 
 // Timing thing
-float timer = 0;
+float timer = 0;	// between 0 and maxTimer
+float maxTimer = PI * 2;
+float timeScale = 0.1f;
 float dt = 0.1;	// seconds
 
 // Camera things
-float cameraPositionDefault[3] = {0, 10, 0 };
+float cameraPositionDefault[3] = {0, 10, 40 };
 float cameraPosition[3] = {0, 0, 0 };
 float cameraAngle[2] = { 0, 0 };	// Horizontal and vertical in radians
 float rotationSpeed = 0.1;
@@ -46,7 +48,7 @@ float vasez_init[vasePoints] = { 0 };
 float vaseRotationOrigin[3] = { 0, 10, 0 };
 float vasePosition[3];
 float vaseRotationRadius = 10;
-float vaseSpeedMultiplier = 0.1;
+float vaseRotation = 0;
 
 
 // ================================================================================================
@@ -111,7 +113,7 @@ void keyHandler(unsigned char key, int x, int y) {
 		cameraPosition[0] = cameraPositionDefault[0];
 		cameraPosition[1] = cameraPositionDefault[1];
 		cameraPosition[2] = cameraPositionDefault[2];
-		cameraAngle[0] = 0;
+		cameraAngle[0] = -PI / 2;
 		cameraAngle[1] = 0;
 	}
 	if (key == '8') {
@@ -133,14 +135,18 @@ void keyHandler(unsigned char key, int x, int y) {
 // ================================================================================================
 void moveObjects() {
 	// vase
-	vasePosition[0] = vaseRotationOrigin[0] + sin(timer * vaseSpeedMultiplier) * vaseRotationRadius;
-	vasePosition[1] = vaseRotationOrigin[1] + (-cos(timer * vaseSpeedMultiplier * 2) * 0.5 - 1) * vaseRotationRadius;
+	vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * vaseRotationRadius;
+	vasePosition[1] = vaseRotationOrigin[1] + (-cos(timer * 2) * 0.5 - 1) * vaseRotationRadius;
 	vasePosition[2] = vaseRotationOrigin[2];
+
+//	vaseRotation = (timer * 180 / PI);
+//	if (vaseRotation > 90 && vaseRotation < 270) vaseRotation = 180 - vaseRotation;
+	vaseRotation = atan2(vasePosition[1] - vaseRotationOrigin[1], vasePosition[0] - vaseRotationOrigin[0]) * 180 / PI + 90;
 }
 
 void timerFunc(int x) {
 	moveObjects();
-	timer += dt;
+	timer = fmod(timer + dt * timeScale, maxTimer);
 	glutTimerFunc(1 / dt, timerFunc, 0);
 	glutPostRedisplay();
 }
@@ -172,6 +178,12 @@ void drawAxes(float axisLength=10) {
 /// Draw a vase at (0, 0, 0) with max offsets +- (0.5, 0.5, 0.5) 
 /// </summary>
 void drawVase() {
+
+	glPushMatrix();
+	glScalef(0.1f, 10, 0.1f);
+	glutSolidCube(1);
+	glPopMatrix();
+
 	glScalef(1 / 11.4, 1 / 43.0, 1 / 11.4);
 
 	// Init arrays
@@ -265,6 +277,7 @@ void display(void)
 
 	glPushMatrix();
 	glTranslatef(vasePosition[0], vasePosition[1], vasePosition[2]);
+	glRotatef(vaseRotation, 0, 0, 1);
 	glScalef(1, 3, 1);
 	drawVase();
 	glPopMatrix();
@@ -303,7 +316,7 @@ int main(int argc, char **argv)
 
 	glutInit(&argc, argv);            
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);  
-	glutInitWindowSize(600, 600);
+	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Ooooh Aaaah");
 	initialize();
