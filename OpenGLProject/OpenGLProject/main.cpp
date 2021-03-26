@@ -18,6 +18,7 @@
 #include <cmath>
 #include <GL/freeglut.h>
 #include <iostream>
+#include <fstream>
 
 # define PI           3.14159265358979323846
 # define GRAVITY	9.81
@@ -56,7 +57,59 @@ float vaseRotation = 0;
 // Ball
 float ballPosition[3];
 
+// skybox
+GLuint skyboxId;
 
+// ================================================================================================
+// Texture things
+// ================================================================================================
+void loadBMP(string filename)
+{
+    char* imageData;
+	char header1[18], header2[24];
+	short int planes, bpp;
+    int wid, hgt;
+    int nbytes, size, indx, temp;
+    ifstream file( filename.c_str(), ios::in | ios::binary);
+	if(!file)
+	{
+		cout << "*** Error opening image file: " << filename.c_str() << endl;
+		exit(1);
+	}
+	file.read (header1, 18);		//Initial part of header
+	file.read ((char*)&wid, 4);		//Width
+	file.read ((char*)&hgt, 4);		//Height
+	file.read ((char*)&planes, 2);	//Planes
+	file.read ((char*)&bpp, 2);		//Bits per pixel
+	file.read (header2, 24);		//Remaining part of header
+
+//		cout << "Width =" << wid << "   Height = " << hgt << " Bpp = " << bpp << endl;
+
+	nbytes = bpp / 8;           //No. of bytes per pixels
+	size = wid * hgt * nbytes;  //Total number of bytes to be read
+	imageData = new char[size];
+	file.read(imageData, size);
+	//Swap r and b values
+	for(int i = 0; i < wid*hgt;  i++)
+	{
+	    indx = i*nbytes;
+	    temp = imageData[indx];
+	    imageData[indx] = imageData[indx+2];
+	    imageData[indx+2] = temp;
+    }
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wid, hgt, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+    delete imageData;	
+}
+
+void loadTexture(string path, GLuint &txId)				
+{
+	glGenTextures(1, &txId); 				// Create a Texture object
+	glBindTexture(GL_TEXTURE_2D, txId);		//Use this texture
+    loadBMP(path);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+}
 // ================================================================================================
 // Math
 // ================================================================================================
@@ -255,6 +308,24 @@ void drawFloor()
 	}
 }
 
+void drawSkybox(GLuint &imgId, float size=30) {
+	glPushMatrix();
+	glTranslatef(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0., 0.);
+	glVertex3f(-size, -size, -size);
+	glTexCoord2f(1., 0.);
+	glVertex3f(size, -size, -size);
+	glTexCoord2f(1., 1.);
+	glVertex3f(size, size, -size);
+	glTexCoord2f(0., 1.);
+	glVertex3f(-size, size, -size);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+}
+
 //--Display: ---------------------------------------------------------------
 //--This is the main display module containing function calls for generating
 //--the scene.
@@ -282,6 +353,9 @@ void display(void)
 	glDisable(GL_LIGHTING);			//Disable lighting when drawing floor.
     drawFloor();
 	drawAxes();
+	glPushMatrix();
+	drawSkybox(skyboxId);
+	glPopMatrix();
 
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
 
@@ -321,6 +395,8 @@ void initialize(void)
 	cameraPosition[2] = cameraPositionDefault[2];
 	cameraAngle[0] = cameraAngleDefault[0];
 	cameraAngle[1] = cameraAngleDefault[1];
+
+	loadTexture("../src/skybox.bmp", skyboxId);
 
 	glEnable(GL_LIGHTING);		//Enable OpenGL states
 	glEnable(GL_LIGHT0);
