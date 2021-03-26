@@ -23,13 +23,13 @@
 # define GRAVITY	9.81
 using namespace std; 
 
-float vaseRotationRadius = 10;
+float rotationRadius = 10;
 
 // Timing thing
 float timer = 0;	// between 0 and maxTimer
-float period = PI * 2 * vaseRotationRadius * vaseRotationRadius / GRAVITY;
-float timeScale = 0.1f;
-float dt = 0.1;	// seconds
+float period = PI * 2 * rotationRadius * rotationRadius / GRAVITY;
+float timeScale = 0.5;
+float dt = 1.0 / 60.0;	// seconds
 
 // Camera things
 float cameraPositionDefault[3] = {0, 10, 40 };
@@ -39,19 +39,22 @@ float cameraAngle[2] = { 0, 0 };	// Horizontal and vertical in radians
 float rotationSpeed = 0.1;
 
 // Vase things
-const int vasePoints = 50;  // Total number of vertices on the base curve
+const int vasePoints = 51;  // Total number of vertices on the base curve
  
-float vasex_init[vasePoints] = { 0, 8, 8, 7.5, 6.7, 5, 5.5, 4, 4, 5, 5.6, 6.1, 6.8, 7.1, 7.5, 8, 8.4, 8.7, 9, 9.3,
+float vasex_init[vasePoints] = { 3.5, 8, 8, 7.5, 6.7, 5, 5.5, 4, 4, 5, 5.6, 6.1, 6.8, 7.1, 7.5, 8, 8.4, 8.7, 9, 9.3,
                       9.8, 10, 10.2, 10.4, 10.6, 10.9, 11, 11.1, 11.2, 11.3, 11.4, 11.3, 11.2, 11.1, 11, 10.5, 9.5, 8.2, 7, 6.2,
-                      6, 6.2, 6.8, 7.6, 8.5, 7, 6.1, 5.3, 4.7, 4.5 };
+                      6, 6.2, 6.8, 7.6, 8.5, 7, 6.1, 5.3, 4.7, 4.5, 3.5 };
 float vasey_init[vasePoints] = { 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
                       19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                      39, 40, 41, 42, 43, 43, 42, 41, 40, 39 };
+                      39, 40, 41, 42, 43, 43, 42, 41, 40, 39, 0};
 float vasez_init[vasePoints] = { 0 };
 
-float vaseRotationOrigin[3] = { 0, 10, 0 };
+float rotationOrigin[3] = { 0, 10, 0 };
 float vasePosition[3];
 float vaseRotation = 0;
+
+// Ball
+float ballPosition[3];
 
 
 // ================================================================================================
@@ -139,25 +142,29 @@ void keyHandler(unsigned char key, int x, int y) {
 // ================================================================================================
 void moveObjects() {
 	// vase
-	//vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * vaseRotationRadius;
-	//vasePosition[1] = vaseRotationOrigin[1] + cos(timer) * vaseRotationRadius;
+	//vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * rotationRadius;
+	//vasePosition[1] = vaseRotationOrigin[1] + cos(timer) * rotationRadius;
 
-	float ai = (PI / 3);
-	float omega = sqrt(GRAVITY / vaseRotationRadius);
+	float vaseInitialAngle = (PI / 8);
+	float vaseAngle = vaseInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
+	vaseRotation = vaseAngle * 180 / PI + 90;
 
-	float angle = ai * cos(omega * timer);
+	vasePosition[0] = -cos(vaseAngle + PI / 2) * rotationRadius + rotationOrigin[0];
+	vasePosition[1] = -sin(vaseAngle + PI / 2) * rotationRadius + rotationOrigin[1];
+	vasePosition[2] = rotationOrigin[2];
 
-	vaseRotation = angle * 180 / PI + 90;
+	float ballInitialAngle = (PI / 2);
+	float ballAngle = ballInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
 
-	vasePosition[0] = -cos(angle + PI / 2) * vaseRotationRadius + vaseRotationOrigin[0];
-	vasePosition[1] = -sin(angle + PI / 2) * vaseRotationRadius + vaseRotationOrigin[1];
-	vasePosition[2] = vaseRotationOrigin[2];
+	ballPosition[2] = -cos(ballAngle + PI / 2) * rotationRadius + rotationOrigin[0];
+	ballPosition[1] = -sin(ballAngle + PI / 2) * rotationRadius + rotationOrigin[1];
+	ballPosition[0] = rotationOrigin[2];
 }
 
 void timerFunc(int x) {
 	moveObjects();
 	timer = fmod(timer + dt * timeScale, period);
-	glutTimerFunc(1 / dt, timerFunc, 0);
+	glutTimerFunc(1000 * dt, timerFunc, 0);
 	glutPostRedisplay();
 }
 
@@ -189,8 +196,8 @@ void drawAxes(float axisLength=10) {
 /// </summary>
 void drawVase() {
 
+	glTranslatef(0, -0.5, 0);
 	glScalef(1 / 11.4, 1 / 43.0, 1 / 11.4);	// scale to size of 1
-	glTranslatef(-0.5f, -0.5f, -0.5f);
 
 	// Init arrays
 	float vx[vasePoints], vy[vasePoints], vz[vasePoints];
@@ -277,18 +284,29 @@ void display(void)
 	drawAxes();
 
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
-    glColor3f(0.0, 1.0, 1.0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    glColor3f(1, 0.8, 0);
 	glPushMatrix();
 	glTranslatef(vasePosition[0], vasePosition[1], vasePosition[2]);
 	glRotatef(vaseRotation, 0, 0, 1);
-	glScalef(1, 3, 1);
+	glRotatef(-90, 1, 0, 0);
+	glScalef(2, 4, 2);
 	drawVase();
 	glPopMatrix();
 
-	glFlush(); 
+    glColor3f(1, 1, 1);
+	glPushMatrix();
+	glTranslatef(ballPosition[0], ballPosition[1], ballPosition[2]);
+	glutSolidSphere(0.2, 10, 10);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(ballPosition[0], ballPosition[1], -ballPosition[2]);
+	glutSolidSphere(0.2, 10, 10);
+	glPopMatrix();
+
+	glutSwapBuffers(); 
 } 
 
 // ================================================================================================
@@ -321,7 +339,7 @@ int main(int argc, char **argv)
 { 
 
 	glutInit(&argc, argv);            
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);  
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);  
 	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Ooooh Aaaah");
