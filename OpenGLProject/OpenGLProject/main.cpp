@@ -20,11 +20,14 @@
 #include <iostream>
 
 # define PI           3.14159265358979323846
+# define GRAVITY	9.81
 using namespace std; 
+
+float vaseRotationRadius = 10;
 
 // Timing thing
 float timer = 0;	// between 0 and maxTimer
-float maxTimer = PI * 2;
+float period = PI * 2 * vaseRotationRadius * vaseRotationRadius / GRAVITY;
 float timeScale = 0.1f;
 float dt = 0.1;	// seconds
 
@@ -47,7 +50,6 @@ float vasez_init[vasePoints] = { 0 };
 
 float vaseRotationOrigin[3] = { 0, 10, 0 };
 float vasePosition[3];
-float vaseRotationRadius = 10;
 float vaseRotation = 0;
 
 
@@ -115,6 +117,7 @@ void keyHandler(unsigned char key, int x, int y) {
 		cameraPosition[2] = cameraPositionDefault[2];
 		cameraAngle[0] = -PI / 2;
 		cameraAngle[1] = 0;
+		timer = 0;
 	}
 	if (key == '8') {
 		cameraAngle[1] += rotationSpeed;
@@ -135,18 +138,24 @@ void keyHandler(unsigned char key, int x, int y) {
 // ================================================================================================
 void moveObjects() {
 	// vase
-	vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * vaseRotationRadius;
-	vasePosition[1] = vaseRotationOrigin[1] + (-cos(timer * 2) * 0.5 - 1) * vaseRotationRadius;
-	vasePosition[2] = vaseRotationOrigin[2];
+	//vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * vaseRotationRadius;
+	//vasePosition[1] = vaseRotationOrigin[1] + cos(timer) * vaseRotationRadius;
 
-//	vaseRotation = (timer * 180 / PI);
-//	if (vaseRotation > 90 && vaseRotation < 270) vaseRotation = 180 - vaseRotation;
-	vaseRotation = atan2(vasePosition[1] - vaseRotationOrigin[1], vasePosition[0] - vaseRotationOrigin[0]) * 180 / PI + 90;
+	float ai = (PI / 4);
+	float omega = sqrt(GRAVITY / vaseRotationRadius);
+
+	float angle = ai * cos(omega * timer);
+
+	vaseRotation = angle * 180 / PI;
+
+	vasePosition[0] = -cos(angle + PI / 2) * vaseRotationRadius + vaseRotationOrigin[0];
+	vasePosition[1] = -sin(angle + PI / 2) * vaseRotationRadius + vaseRotationOrigin[1];
+	vasePosition[2] = vaseRotationOrigin[2];
 }
 
 void timerFunc(int x) {
 	moveObjects();
-	timer = fmod(timer + dt * timeScale, maxTimer);
+	timer = fmod(timer + dt * timeScale, period);
 	glutTimerFunc(1 / dt, timerFunc, 0);
 	glutPostRedisplay();
 }
@@ -179,12 +188,8 @@ void drawAxes(float axisLength=10) {
 /// </summary>
 void drawVase() {
 
-	glPushMatrix();
-	glScalef(0.1f, 10, 0.1f);
-	glutSolidCube(1);
-	glPopMatrix();
-
-	glScalef(1 / 11.4, 1 / 43.0, 1 / 11.4);
+	glScalef(1 / 11.4, 1 / 43.0, 1 / 11.4);	// scale to size of 1
+	glTranslatef(-0.5f, -0.5f, -0.5f);
 
 	// Init arrays
 	float vx[vasePoints], vy[vasePoints], vz[vasePoints];
