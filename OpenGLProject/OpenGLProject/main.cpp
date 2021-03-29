@@ -311,16 +311,63 @@ void drawFloor()
 void drawSkybox(GLuint &imgId, float size=30) {
 	glPushMatrix();
 	glTranslatef(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+	
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0., 0.);
+	glTexCoord2f(0.0, 1.0/3);
 	glVertex3f(-size, -size, -size);
-	glTexCoord2f(1., 0.);
+	glTexCoord2f(0.25, 1.0/3);
 	glVertex3f(size, -size, -size);
-	glTexCoord2f(1., 1.);
+	glTexCoord2f(0.25, 2.0/3);
 	glVertex3f(size, size, -size);
-	glTexCoord2f(0., 1.);
+	glTexCoord2f(0., 2.0/3);
 	glVertex3f(-size, size, -size);
+
+	glTexCoord2f(0.25, 1.0/3);
+	glVertex3f(size, -size, -size);
+	glTexCoord2f(0.5, 1.0/3);
+	glVertex3f(size, -size, size);
+	glTexCoord2f(0.5, 2.0/3);
+	glVertex3f(size, size, size);
+	glTexCoord2f(0.25, 2.0/3);
+	glVertex3f(size, size, -size);
+
+	glTexCoord2f(0.5, 1.0/3);
+	glVertex3f(size, -size, size);
+	glTexCoord2f(0.75, 1.0/3);
+	glVertex3f(-size, -size, size);
+	glTexCoord2f(0.75, 2.0/3);
+	glVertex3f(-size, size, size);
+	glTexCoord2f(0.5, 2.0/3);
+	glVertex3f(size, size, size);
+
+	glTexCoord2f(0.75, 1.0/3);
+	glVertex3f(-size, -size, size);
+	glTexCoord2f(1.0, 1.0/3);
+	glVertex3f(-size, -size, -size);
+	glTexCoord2f(1.0, 2.0/3);
+	glVertex3f(-size, size, -size);
+	glTexCoord2f(0.75, 2.0/3);
+	glVertex3f(-size, size, size);
+
+	glTexCoord2f(0.5, 1);
+	glVertex3f(-size, size, size);
+	glTexCoord2f(0.5, 2.0/3);
+	glVertex3f(size, size, size);
+	glTexCoord2f(0.25, 2.0/3);
+	glVertex3f(size, size, -size);
+	glTexCoord2f(0.25, 1);
+	glVertex3f(-size, size, -size);
+
+	glTexCoord2f(0.5, 1.0/3);
+	glVertex3f(-size, -size, size);
+	glTexCoord2f(0.5, 0);
+	glVertex3f(size, -size, size);
+	glTexCoord2f(0.25, 1.0/3);
+	glVertex3f(size, -size, -size);
+	glTexCoord2f(0.25, 0);
+	glVertex3f(-size, -size, -size);
+
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -354,7 +401,7 @@ void display(void)
     drawFloor();
 	drawAxes();
 	glPushMatrix();
-	drawSkybox(skyboxId);
+	drawSkybox(skyboxId, 100);
 	glPopMatrix();
 
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
