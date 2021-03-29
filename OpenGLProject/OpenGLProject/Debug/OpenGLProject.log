@@ -47,5 +47,5 @@ G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(355,25): w
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(357,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(362,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(366,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(411,24): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(410,24): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
   OpenGLProject.vcxproj -> G:\uni-repo\COSC363\assignment-1\OpenGLProject\Debug\OpenGLProject.exe

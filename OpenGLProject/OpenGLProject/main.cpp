@@ -249,7 +249,7 @@ void drawAxes(float axisLength=10) {
 /// </summary>
 void drawVase() {
 
-	glTranslatef(0, -0.5, 0);
+	glTranslatef(0, 0.5, 0);
 	glScalef(1 / 11.4, 1 / 43.0, 1 / 11.4);	// scale to size of 1
 
 	// Init arrays
@@ -258,7 +258,7 @@ void drawVase() {
 	for (int i = 0; i < vasePoints; i++)
 	{
 		vx[i] = vasex_init[i];
-		vy[i] = vasey_init[i];
+		vy[i] = -vasey_init[i];
 		vz[i] = vasez_init[i];
 	}
 
@@ -269,7 +269,7 @@ void drawVase() {
 		// Calculate points
 		for (int i = 0; i < vasePoints; i++) {
 			wx[i] = vasex_init[i] * cos(a) + vasez_init[i] * sin(a);
-			wy[i] = vasey_init[i];
+			wy[i] = -vasey_init[i];
 			wz[i] = vasex_init[i] * sin(a) + vasez_init[i] * cos(a);
 		}
 
@@ -378,7 +378,7 @@ void drawSkybox(GLuint &imgId, float size=30) {
 //--the scene.
 void display(void) 
 { 
-	float lpos[4] = {0., 10., 10., 1.0};  //light's position
+	float lpos[4] = {0., 20., 0., 1.0};  //light's position
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
@@ -405,7 +405,6 @@ void display(void)
 	glPopMatrix();
 
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
-
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glColor3f(1, 0.8, 0);
