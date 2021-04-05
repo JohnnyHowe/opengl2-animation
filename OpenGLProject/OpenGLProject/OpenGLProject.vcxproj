@@ -24,7 +24,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{97adfc5e-81c0-4668-83e5-708d83fd7b98}</ProjectGuid>
+    <ProjectGuid>{5485e8b1-9e4b-42dd-a9a5-ab2dff0bf25c}</ProjectGuid>
     <RootNamespace>OpenGLProject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -75,17 +75,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\uni-repo\COSC363\setting-up-vs\OpenGLProject\OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

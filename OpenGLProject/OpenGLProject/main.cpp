@@ -1,28 +1,17 @@
 //  ========================================================================
 //  COSC363: Computer Graphics (2021);  University of Canterbury.
 //
-// Can move with arrow keys:
-//	up: forward
-//	down: back
-//	left: turn left
-//	right: turn right
-// 
-// wasd keys work for movement too
-//
-// r key resets camera position and angle
-//
 //  FILE NAME: Teapot.cpp
 //  See Lab01.pdf for details
 //  ========================================================================
 
-#include <cmath>
 #include <GL/freeglut.h>
 #include <iostream>
 #include <fstream>
+using namespace std; 
 
 # define PI           3.14159265358979323846
 # define GRAVITY	9.81
-using namespace std; 
 
 float rotationRadius = 10;
 
@@ -38,6 +27,10 @@ float cameraAngleDefault[2] = { -PI / 2, 0 };
 float cameraPosition[3] = {0, 0, 0 };
 float cameraAngle[2] = { 0, 0 };	// Horizontal and vertical in radians
 float rotationSpeed = 0.1;
+
+// Textures
+GLuint texture0;
+GLuint texture1;
 
 // Vase things
 const int vasePoints = 51;  // Total number of vertices on the base curve
@@ -57,61 +50,8 @@ float vaseRotation = 0;
 // Ball
 float ballPosition[3];
 
-// skybox
-GLuint skyboxId;
-
 // ================================================================================================
-// Texture things
-// ================================================================================================
-void loadBMP(string filename)
-{
-    char* imageData;
-	char header1[18], header2[24];
-	short int planes, bpp;
-    int wid, hgt;
-    int nbytes, size, indx, temp;
-    ifstream file( filename.c_str(), ios::in | ios::binary);
-	if(!file)
-	{
-		cout << "*** Error opening image file: " << filename.c_str() << endl;
-		exit(1);
-	}
-	file.read (header1, 18);		//Initial part of header
-	file.read ((char*)&wid, 4);		//Width
-	file.read ((char*)&hgt, 4);		//Height
-	file.read ((char*)&planes, 2);	//Planes
-	file.read ((char*)&bpp, 2);		//Bits per pixel
-	file.read (header2, 24);		//Remaining part of header
-
-//		cout << "Width =" << wid << "   Height = " << hgt << " Bpp = " << bpp << endl;
-
-	nbytes = bpp / 8;           //No. of bytes per pixels
-	size = wid * hgt * nbytes;  //Total number of bytes to be read
-	imageData = new char[size];
-	file.read(imageData, size);
-	//Swap r and b values
-	for(int i = 0; i < wid*hgt;  i++)
-	{
-	    indx = i*nbytes;
-	    temp = imageData[indx];
-	    imageData[indx] = imageData[indx+2];
-	    imageData[indx+2] = temp;
-    }
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, wid, hgt, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
-    delete imageData;	
-}
-
-void loadTexture(string path, GLuint &txId)				
-{
-	glGenTextures(1, &txId); 				// Create a Texture object
-	glBindTexture(GL_TEXTURE_2D, txId);		//Use this texture
-    loadBMP(path);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-}
-// ================================================================================================
-// Math
+// Other
 // ================================================================================================
 
 void normal(float x1, float y1, float z1,
@@ -127,98 +67,55 @@ void normal(float x1, float y1, float z1,
 }
 
 // ================================================================================================
-// Handling input
+// Texture Jazz
 // ================================================================================================
 
-void specialHandler(int key, int x, int y) {
-	if (key == GLUT_KEY_UP) {
-		// move forward
-		cameraPosition[0] += cos(cameraAngle[0]);
-		cameraPosition[2] += sin(cameraAngle[0]);
+void loadBMP(string filename)
+{
+	char *imageData;
+	char header1[18], header2[24];
+	short int planes, bpp;
+	int wid, hgt;
+	int nbytes, size, indx, temp;
+	ifstream file(filename.c_str(), ios::in | ios::binary);
+	if (!file)
+	{
+		cout << "*** Error opening image file: " << filename.c_str() << endl;
+		exit(1);
 	}
-	if (key == GLUT_KEY_DOWN) {
-		// move back
-		cameraPosition[0] -= cos(cameraAngle[0]);
-		cameraPosition[2] -= sin(cameraAngle[0]);
+	file.read(header1, 18);		   //Initial part of header
+	file.read((char *)&wid, 4);	   //Width
+	file.read((char *)&hgt, 4);	   //Height
+	file.read((char *)&planes, 2); //Planes
+	file.read((char *)&bpp, 2);	   //Bits per pixel
+	file.read(header2, 24);		   //Remaining part of header
+
+	//	cout << "Width =" << wid << "   Height = " << hgt << " Bpp = " << bpp << endl;
+
+	nbytes = bpp / 8;		   //No. of bytes per pixels
+	size = wid * hgt * nbytes; //Total number of bytes to be read
+	imageData = new char[size];
+	file.read(imageData, size);
+	//Swap r and b values
+	for (int i = 0; i < wid * hgt; i++)
+	{
+		indx = i * nbytes;
+		temp = imageData[indx];
+		imageData[indx] = imageData[indx + 2];
+		imageData[indx + 2] = temp;
 	}
-	if (key == GLUT_KEY_LEFT) {
-		// look left
-		cameraAngle[0] = fmod(cameraAngle[0] - rotationSpeed, PI * 2);
-	}
-	if (key == GLUT_KEY_RIGHT) {
-		// look right
-		cameraAngle[0] = fmod(cameraAngle[0] + rotationSpeed, PI * 2);
-	}
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wid, hgt, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+	delete imageData;
 }
 
-void keyHandler(unsigned char key, int x, int y) {
-	if (key == 'w') {
-		cameraPosition[0] += cos(cameraAngle[0]);
-		cameraPosition[2] += sin(cameraAngle[0]);
-	}
-	if (key == 's') {
-		cameraPosition[0] -= cos(cameraAngle[0]);
-		cameraPosition[2] -= sin(cameraAngle[0]);
-	}
-	if (key == 'a') {
-		cameraPosition[0] += cos(cameraAngle[0] - PI / 2.0);
-		cameraPosition[2] += sin(cameraAngle[0] - PI / 2.0);
-	}
-	if (key == 'd') {
-		cameraPosition[0] += cos(cameraAngle[0] + PI / 2.0);
-		cameraPosition[2] += sin(cameraAngle[0] + PI / 2.0);
-	}
-	if (key == 'r') {
-		cameraPosition[0] = cameraPositionDefault[0];
-		cameraPosition[1] = cameraPositionDefault[1];
-		cameraPosition[2] = cameraPositionDefault[2];
-		cameraAngle[0] = cameraAngleDefault[0];
-		cameraAngle[1] = cameraAngleDefault[1];
-		timer = 0;
-	}
-	if (key == '8') {
-		cameraAngle[1] += rotationSpeed;
-	}
-	if (key == '5') {
-		cameraAngle[1] -= rotationSpeed;
-	}
-	if (key == '4') {
-		cameraAngle[0] -= rotationSpeed;
-	}
-	if (key == '6') {
-		cameraAngle[0] += rotationSpeed;
-	}
-}
-
-// ================================================================================================
-// Animating
-// ================================================================================================
-void moveObjects() {
-	// vase
-	//vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * rotationRadius;
-	//vasePosition[1] = vaseRotationOrigin[1] + cos(timer) * rotationRadius;
-
-	float vaseInitialAngle = (PI / 8);
-	float vaseAngle = vaseInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
-	vaseRotation = vaseAngle * 180 / PI + 90;
-
-	vasePosition[0] = -cos(vaseAngle + PI / 2) * rotationRadius + rotationOrigin[0];
-	vasePosition[1] = -sin(vaseAngle + PI / 2) * rotationRadius + rotationOrigin[1];
-	vasePosition[2] = rotationOrigin[2];
-
-	float ballInitialAngle = (PI / 2);
-	float ballAngle = ballInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
-
-	ballPosition[2] = -cos(ballAngle + PI / 2) * rotationRadius + rotationOrigin[0];
-	ballPosition[1] = -sin(ballAngle + PI / 2) * rotationRadius + rotationOrigin[1];
-	ballPosition[0] = rotationOrigin[2];
-}
-
-void timerFunc(int x) {
-	moveObjects();
-	timer = fmod(timer + dt * timeScale, period);
-	glutTimerFunc(1000 * dt, timerFunc, 0);
-	glutPostRedisplay();
+void loadTexture(GLuint txId, string filename)				
+{
+	glGenTextures(1, &txId); 				// Create a Texture object
+	glBindTexture(GL_TEXTURE_2D, txId);		//Use this texture
+    loadBMP(filename);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 // ================================================================================================
@@ -243,10 +140,6 @@ void drawAxes(float axisLength=10) {
 	glEnd();
 }
 
-
-/// <summary>
-/// Draw a vase at (0, 0, 0) with max offsets +- (0.5, 0.5, 0.5) 
-/// </summary>
 void drawVase() {
 
 	glTranslatef(0, 0.5, 0);
@@ -293,10 +186,10 @@ void drawVase() {
 	}
 }
 
-//--Draws a grid of lines on the floor plane -------------------------------
 void drawFloor()
 {
-	glColor3f(0.4, 0.8,  0.4);			//Floor colour
+	glColor3f(0., 0.5,  0.);			//Floor colour
+
 	for(int i = -50; i <= 50; i ++)
 	{
 		glBegin(GL_LINES);			//A set of grid lines on the xz-plane
@@ -308,7 +201,7 @@ void drawFloor()
 	}
 }
 
-void drawSkybox(GLuint &imgId, float size=30) {
+void drawSkybox(float size=30) {
 	glPushMatrix();
 	glTranslatef(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 	
@@ -359,13 +252,13 @@ void drawSkybox(GLuint &imgId, float size=30) {
 	glTexCoord2f(0.25, 1);
 	glVertex3f(-size, size, -size);
 
-	glTexCoord2f(0.5, 1.0/3);
+	glTexCoord2f(0.25, 0);
 	glVertex3f(-size, -size, size);
 	glTexCoord2f(0.5, 0);
 	glVertex3f(size, -size, size);
-	glTexCoord2f(0.25, 1.0/3);
+	glTexCoord2f(0.5, 1.0/3);
 	glVertex3f(size, -size, -size);
-	glTexCoord2f(0.25, 0);
+	glTexCoord2f(0.25, 1.0/3);
 	glVertex3f(-size, -size, -size);
 
 	glEnd();
@@ -373,18 +266,15 @@ void drawSkybox(GLuint &imgId, float size=30) {
 	glPopMatrix();
 }
 
-//--Display: ---------------------------------------------------------------
-//--This is the main display module containing function calls for generating
-//--the scene.
 void display(void) 
 { 
-	float lpos[4] = {0., 20., 0., 1.0};  //light's position
+	float lpos[4] = {0., 10., 0., 1.0};  //light's position
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-    gluLookAt(
+	gluLookAt(
 		cameraPosition[0], 
 		cameraPosition[1],
 		cameraPosition[2],
@@ -399,15 +289,31 @@ void display(void)
 
 	glDisable(GL_LIGHTING);			//Disable lighting when drawing floor.
     drawFloor();
-	drawAxes();
-	glPushMatrix();
-	drawSkybox(skyboxId, 100);
-	glPopMatrix();
+
+	// TODO find less dumb way of doing this texture switching
+	loadTexture(texture0, "G:\\uni-repo\\COSC363\\assignment-1\\OpenGLProject\\OpenGLProject\\skybox.bmp");
+	drawSkybox(100);
+
+	float s = 10;
+	  float z2 = 10;
+	loadTexture(texture0, "G:\\uni-repo\\COSC363\\assignment-1\\OpenGLProject\\OpenGLProject\\sun.bmp");
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_QUADS);
+	  glNormal3f(0.0, 0.0, 1);   //Facing +z (Front side)
+	  glTexCoord2f(0., 0.);
+	  glVertex3f(0.0, 0.0, z2);
+	  glTexCoord2f(1., 0.);
+	  glVertex3f(s, 0.0, z2);
+	  glTexCoord2f(1.0, 1.0);
+	  glVertex3f(s, s, z2);
+	  glTexCoord2f(0.0, 1.0);
+	  glVertex3f(0.0, s, z2);
+	  glEnd();
+	  glDisable(GL_TEXTURE_2D);
 
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glColor3f(1, 0.8, 0);
+	glColor3f(1, 0.8, 0);
 	glPushMatrix();
 	glTranslatef(vasePosition[0], vasePosition[1], vasePosition[2]);
 	glRotatef(vaseRotation, 0, 0, 1);
@@ -427,22 +333,117 @@ void display(void)
 	glPopMatrix();
 
 	glutSwapBuffers(); 
+
+	glFlush(); 
 } 
 
 // ================================================================================================
-// Start her up
+// Handling input
+// ================================================================================================
+
+void specialHandler(int key, int x, int y) {
+	if (key == GLUT_KEY_UP) {
+		// move forward
+		cameraPosition[0] += cos(cameraAngle[0]);
+		cameraPosition[2] += sin(cameraAngle[0]);
+	}
+	if (key == GLUT_KEY_DOWN) {
+		// move back
+		cameraPosition[0] -= cos(cameraAngle[0]);
+		cameraPosition[2] -= sin(cameraAngle[0]);
+	}
+	if (key == GLUT_KEY_LEFT) {
+		// look left
+		cameraAngle[0] = fmod(cameraAngle[0] - rotationSpeed, PI * 2);
+	}
+	if (key == GLUT_KEY_RIGHT) {
+		// look right
+		cameraAngle[0] = fmod(cameraAngle[0] + rotationSpeed, PI * 2);
+	}
+}
+
+void resetCamera() {
+		cameraPosition[0] = cameraPositionDefault[0];
+		cameraPosition[1] = cameraPositionDefault[1];
+		cameraPosition[2] = cameraPositionDefault[2];
+		cameraAngle[0] = cameraAngleDefault[0];
+		cameraAngle[1] = cameraAngleDefault[1];
+		timer = 0;
+}
+
+void keyHandler(unsigned char key, int x, int y) {
+	if (key == 'w') {
+		cameraPosition[0] += cos(cameraAngle[0]);
+		cameraPosition[2] += sin(cameraAngle[0]);
+	}
+	if (key == 's') {
+		cameraPosition[0] -= cos(cameraAngle[0]);
+		cameraPosition[2] -= sin(cameraAngle[0]);
+	}
+	if (key == 'a') {
+		cameraPosition[0] += cos(cameraAngle[0] - PI / 2.0);
+		cameraPosition[2] += sin(cameraAngle[0] - PI / 2.0);
+	}
+	if (key == 'd') {
+		cameraPosition[0] += cos(cameraAngle[0] + PI / 2.0);
+		cameraPosition[2] += sin(cameraAngle[0] + PI / 2.0);
+	}
+	if (key == 'r') {
+		resetCamera();
+	}
+	if (key == '8') {
+		cameraAngle[1] += rotationSpeed;
+	}
+	if (key == '5') {
+		cameraAngle[1] -= rotationSpeed;
+	}
+	if (key == '4') {
+		cameraAngle[0] -= rotationSpeed;
+	}
+	if (key == '6') {
+		cameraAngle[0] += rotationSpeed;
+	}
+}
+
+// ================================================================================================
+// Animating
+// ================================================================================================
+
+void moveObjects() {
+	// vase
+	//vasePosition[0] = vaseRotationOrigin[0] + sin(timer) * rotationRadius;
+	//vasePosition[1] = vaseRotationOrigin[1] + cos(timer) * rotationRadius;
+
+	float vaseInitialAngle = (PI / 8);
+	float vaseAngle = vaseInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
+	vaseRotation = vaseAngle * 180 / PI + 90;
+
+	vasePosition[0] = -cos(vaseAngle + PI / 2) * rotationRadius + rotationOrigin[0];
+	vasePosition[1] = -sin(vaseAngle + PI / 2) * rotationRadius + rotationOrigin[1];
+	vasePosition[2] = rotationOrigin[2];
+
+	float ballInitialAngle = (PI / 2);
+	float ballAngle = ballInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
+
+	ballPosition[2] = -cos(ballAngle + PI / 2) * rotationRadius + rotationOrigin[0];
+	ballPosition[1] = -sin(ballAngle + PI / 2) * rotationRadius + rotationOrigin[1];
+	ballPosition[0] = rotationOrigin[2];
+}
+
+void timerFunc(int x) {
+	moveObjects();
+	timer = fmod(timer + dt * timeScale, period);
+	glutTimerFunc(1000 * dt, timerFunc, 0);
+	glutPostRedisplay();
+}
+
+// ================================================================================================
+// Running and Initalizing
 // ================================================================================================
 
 void initialize(void)
 {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	cameraPosition[0] = cameraPositionDefault[0];
-	cameraPosition[1] = cameraPositionDefault[1];
-	cameraPosition[2] = cameraPositionDefault[2];
-	cameraAngle[0] = cameraAngleDefault[0];
-	cameraAngle[1] = cameraAngleDefault[1];
-
-	loadTexture("../src/skybox.bmp", skyboxId);
 
 	glEnable(GL_LIGHTING);		//Enable OpenGL states
 	glEnable(GL_LIGHT0);
@@ -455,22 +456,21 @@ void initialize(void)
 	glFrustum(-5.0, 5.0, -5.0, 5.0, 10.0, 1000.0);   //Camera Frustum
 }
 
-
-//  ------- Main: Initialize glut window and register call backs -------
 int main(int argc, char **argv) 
 { 
-
 	glutInit(&argc, argv);            
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);  
-	glutInitWindowSize(800, 800);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);  
+	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(0, 0);
-	glutCreateWindow("Ooooh Aaaah");
+	glutCreateWindow("Teapot");
 	initialize();
 	glutSpecialFunc(specialHandler);
 	glutKeyboardFunc(keyHandler);
-	timerFunc(0);
 	glutDisplayFunc(display);
+	timerFunc(0);
+	resetCamera();
 	glutMainLoop();
 	return 0; 
 }
+
 
