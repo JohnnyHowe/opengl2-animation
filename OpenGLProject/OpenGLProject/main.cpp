@@ -14,7 +14,7 @@ using namespace std;
 # define GRAVITY	9.81
 string THISDIR = "..\\OpenGLProject\\";
 
-float rotationRadius = 10;
+float rotationRadius = 8;
 
 // Timing thing
 float timer = 0;	// between 0 and maxTimer
@@ -30,8 +30,8 @@ float cameraAngle[2] = { 0, 0 };	// Horizontal and vertical in radians
 float rotationSpeed = 0.1;
 
 // Textures
-GLuint texture0;
-GLuint texture1;
+GLuint texture0;	// Skybox
+GLuint texture1;	// Marble
 
 // Vase things
 const int vasePoints = 51;  // Total number of vertices on the base curve
@@ -191,15 +191,31 @@ void drawFloor()
 {
 	glColor3f(0., 0.5,  0.);			//Floor colour
 
-	for(int i = -50; i <= 50; i ++)
-	{
-		glBegin(GL_LINES);			//A set of grid lines on the xz-plane
-			glVertex3f(-50, -0.75, i);
-			glVertex3f(50, -0.75, i);
-			glVertex3f(i, -0.75, -50);
-			glVertex3f(i, -0.75, 50);
-		glEnd();
-	}
+	float s = 50;
+	loadTexture(texture1, THISDIR + "marble.bmp");
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_QUADS);
+	  glNormal3f(0.0, 1.0, 0.0);   //Facing +z (Front side)
+	  glTexCoord2f(0., 0.);
+	  glVertex3f(-s, 0.0, -s);
+	  glTexCoord2f(1., 0.);
+	  glVertex3f(s, 0.0, -s);
+	  glTexCoord2f(1.0, 1.0);
+	  glVertex3f(s, 0.0, s);
+	  glTexCoord2f(0.0, 1.0);
+	  glVertex3f(-s, 0.0, s);
+	  glEnd();
+	  glDisable(GL_TEXTURE_2D);
+
+	//for(int i = -50; i <= 50; i ++)
+	//{
+	//	glBegin(GL_LINES);			//A set of grid lines on the xz-plane
+	//		glVertex3f(-50, -0.75, i);
+	//		glVertex3f(50, -0.75, i);
+	//		glVertex3f(i, -0.75, -50);
+	//		glVertex3f(i, -0.75, 50);
+	//	glEnd();
+	//}
 }
 
 void drawSkybox(float size=30) {
@@ -295,22 +311,22 @@ void display(void)
 	loadTexture(texture0, THISDIR + "skybox.bmp");
 	drawSkybox(100);
 
-	float s = 10;
-	  float z2 = 10;
-	loadTexture(texture0, THISDIR + "sun.bmp");
-	glEnable(GL_TEXTURE_2D);
-	glBegin(GL_QUADS);
-	  glNormal3f(0.0, 0.0, 1);   //Facing +z (Front side)
-	  glTexCoord2f(0., 0.);
-	  glVertex3f(0.0, 0.0, z2);
-	  glTexCoord2f(1., 0.);
-	  glVertex3f(s, 0.0, z2);
-	  glTexCoord2f(1.0, 1.0);
-	  glVertex3f(s, s, z2);
-	  glTexCoord2f(0.0, 1.0);
-	  glVertex3f(0.0, s, z2);
-	  glEnd();
-	  glDisable(GL_TEXTURE_2D);
+	//float s = 10;
+	//  float z2 = 10;
+	//loadTexture(texture0, THISDIR + "sun.bmp");
+	//glEnable(GL_TEXTURE_2D);
+	//glBegin(GL_QUADS);
+	//  glNormal3f(0.0, 0.0, 1);   //Facing +z (Front side)
+	//  glTexCoord2f(0., 0.);
+	//  glVertex3f(0.0, 0.0, z2);
+	//  glTexCoord2f(1., 0.);
+	//  glVertex3f(s, 0.0, z2);
+	//  glTexCoord2f(1.0, 1.0);
+	//  glVertex3f(s, s, z2);
+	//  glTexCoord2f(0.0, 1.0);
+	//  glVertex3f(0.0, s, z2);
+	//  glEnd();
+	//  glDisable(GL_TEXTURE_2D);
 
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
 
