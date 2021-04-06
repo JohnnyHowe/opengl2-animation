@@ -12,6 +12,7 @@ using namespace std;
 
 # define PI           3.14159265358979323846
 # define GRAVITY	9.81
+string THISDIR = "..\\OpenGLProject\\";
 
 float rotationRadius = 10;
 
@@ -291,12 +292,12 @@ void display(void)
     drawFloor();
 
 	// TODO find less dumb way of doing this texture switching
-	loadTexture(texture0, "G:\\uni-repo\\COSC363\\assignment-1\\OpenGLProject\\OpenGLProject\\skybox.bmp");
+	loadTexture(texture0, THISDIR + "skybox.bmp");
 	drawSkybox(100);
 
 	float s = 10;
 	  float z2 = 10;
-	loadTexture(texture0, "G:\\uni-repo\\COSC363\\assignment-1\\OpenGLProject\\OpenGLProject\\sun.bmp");
+	loadTexture(texture0, THISDIR + "sun.bmp");
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	  glNormal3f(0.0, 0.0, 1);   //Facing +z (Front side)

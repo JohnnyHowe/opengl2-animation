@@ -1,50 +1,50 @@
 ﻿  main.cpp
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(20,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(22,22): warning C4305: 'initializing': truncation from 'double' to 'float'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(26,44): warning C4305: 'initializing': truncation from 'double' to 'float'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(29,26): warning C4305: 'initializing': truncation from 'double' to 'float'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(40,73): warning C4305: 'initializing': truncation from 'double' to 'float'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(146,39): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(160,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(196,27): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(197,26): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(198,15): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(21,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(23,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(27,44): warning C4305: 'initializing': truncation from 'double' to 'float'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(30,26): warning C4305: 'initializing': truncation from 'double' to 'float'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(41,73): warning C4305: 'initializing': truncation from 'double' to 'float'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(147,39): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(161,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(197,27): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(198,26): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(199,15): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(210,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(212,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(214,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(216,24): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(219,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(221,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(223,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(225,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(228,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(230,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(232,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(234,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(237,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(239,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(241,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(243,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(248,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(250,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(259,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(261,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(316,21): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(357,24): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(361,24): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(384,54): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(200,15): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(211,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(213,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(215,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(217,24): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(220,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(222,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(224,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(226,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(229,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(231,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(233,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(235,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(238,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(240,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(242,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(244,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(249,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(251,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(260,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(262,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(317,21): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(358,24): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(362,24): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(385,54): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(388,54): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(386,54): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(389,54): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(417,35): warning C4305: 'initializing': truncation from 'double' to 'float'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(418,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(419,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(421,62): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(390,54): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(418,35): warning C4305: 'initializing': truncation from 'double' to 'float'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(419,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(420,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(422,62): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(425,35): warning C4305: 'initializing': truncation from 'double' to 'float'
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(426,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(428,62): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(423,62): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(426,35): warning C4305: 'initializing': truncation from 'double' to 'float'
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(427,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(429,62): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(436,21): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(430,62): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\uni-repo\COSC363\assignment-1\OpenGLProject\OpenGLProject\main.cpp(437,21): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
   OpenGLProject.vcxproj -> G:\uni-repo\COSC363\assignment-1\OpenGLProject\Debug\OpenGLProject.exe
