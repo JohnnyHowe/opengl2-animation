@@ -218,9 +218,8 @@ void drawFloor()
 	//}
 }
 
-void drawSkybox(float size=30) {
+void drawTextureBox(float size=0.5) {
 	glPushMatrix();
-	glTranslatef(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 	
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
@@ -283,6 +282,13 @@ void drawSkybox(float size=30) {
 	glPopMatrix();
 }
 
+void drawSkybox(float size = 30) {
+	glPushMatrix();
+	glTranslatef(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+	drawTextureBox(size);
+	glPopMatrix();
+}
+
 void display(void) 
 { 
 	float lpos[4] = {0., 10., 0., 1.0};  //light's position
@@ -326,8 +332,20 @@ void display(void)
 	//  glTexCoord2f(0.0, 1.0);
 	//  glVertex3f(0.0, s, z2);
 	//  glEnd();
-	//  glDisable(GL_TEXTURE_2D);
 
+	// Vase
+	glPushMatrix();
+	glColor3f(0.3, 0.3, 0.3);
+	glTranslatef(0, rotationRadius * 1.75, 0);
+	glTranslatef(0, -rotationRadius / 2.0, 0);
+	glRotatef(vaseRotation + 90, 0, 0, 1);
+	glTranslatef(0, rotationRadius / 2.0, 0);
+	glScalef(0.4, rotationRadius * 0.75, 0.4);
+	loadTexture(texture0, THISDIR + "wood.bmp");
+	drawTextureBox();
+	glPopMatrix();
+
+	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
 
 	glColor3f(1, 0.8, 0);
@@ -339,6 +357,7 @@ void display(void)
 	drawVase();
 	glPopMatrix();
 
+	// Balls
     glColor3f(1, 1, 1);
 	glPushMatrix();
 	glTranslatef(ballPosition[0], ballPosition[1], ballPosition[2]);
@@ -461,6 +480,9 @@ void timerFunc(int x) {
 void initialize(void)
 {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	loadTexture(texture0, THISDIR + "skybox.bmp");
+	loadTexture(texture1, THISDIR + "marble.bmp");
 
 	glEnable(GL_LIGHTING);		//Enable OpenGL states
 	glEnable(GL_LIGHT0);
