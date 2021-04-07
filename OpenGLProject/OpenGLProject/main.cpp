@@ -8,11 +8,13 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include <fstream>
+#include <math.h>
+#include <stdio.h>
 using namespace std; 
 
 # define PI           3.14159265358979323846
 # define GRAVITY	9.81
-string THISDIR = "..\\OpenGLProject\\";
+string THISDIR = "../OpenGLProject/";
 
 float rotationRadius = 8;
 
@@ -547,13 +549,11 @@ void initialize(void)
 
 int main(int argc, char **argv) 
 { 
-
-	cout << period;
 	glutInit(&argc, argv);            
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);  
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(0, 0);
-	glutCreateWindow("Teapot");
+	glutCreateWindow("joh29 COSC363 Assignment1");
 	initialize();
 	glutSpecialFunc(specialHandler);
 	glutKeyboardFunc(keyHandler);

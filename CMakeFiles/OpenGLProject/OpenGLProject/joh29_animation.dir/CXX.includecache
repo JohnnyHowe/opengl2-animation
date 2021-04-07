@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/cosc/student/joh29/Desktop/git/OpenGL-animation/OpenGLProject/OpenGLProject/main.cpp
+GL/freeglut.h
+-
+iostream
+-
+fstream
+-
+math.h
+-
+stdio.h
+-
+
