@@ -19,7 +19,7 @@ float rotationRadius = 8;
 // Timing thing
 float timer = 0;	// between 0 and maxTimer
 float period = PI * 2 * sqrt(rotationRadius / GRAVITY);
-float timeScale = 1.5;
+float timeScale = 1.2;
 float dt = 1.0 / 60.0;	// seconds
 
 // Camera things
@@ -127,7 +127,7 @@ void loadTextures()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
 
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 }
 
@@ -136,17 +136,17 @@ void loadTextures()
 // ================================================================================================
 
 void drawAxes(float axisLength=10) {
-    glColor3f(1.0, 0.0, 0.0);
+    //glColor3f(1.0, 0.0, 0.0);
 	glBegin(GL_LINES);
 	glVertex3f(0, 0, 0);
 	glVertex3f(axisLength, 0, 0);
 	glEnd();
-    glColor3f(0.0, 1.0, 0.0);
+    //glColor3f(0.0, 1.0, 0.0);
 	glBegin(GL_LINES);
 	glVertex3f(0, 0, 0);
 	glVertex3f(0, axisLength, 0);
 	glEnd();
-    glColor3f(0.0, 0.0, 1.0);
+    //glColor3f(0.0, 0.0, 1.0);
 	glBegin(GL_LINES);
 	glVertex3f(0, 0, 0);
 	glVertex3f(0, 0, axisLength);
@@ -168,8 +168,9 @@ void drawVase() {
 	}
 
 	// Sweep
-	for (int j = 0; j <= 36; j++) {
-		float a = (10 * j) * (PI / 180);
+	int sections = 90;
+	for (int j = 0; j <= sections; j++) {
+		float a = ((360.0 / sections) * j) * (PI / 180);
 
 		// Calculate points
 		for (int i = 0; i < vasePoints; i++) {
@@ -200,7 +201,7 @@ void drawVase() {
 
 void drawFloor()
 {
-	glColor3f(0., 0.5,  0.);			//Floor colour
+	//glColor3f(0., 0.5,  0.);			//Floor colour
 	float y = -10;
 	float s = 50;
 	glEnable(GL_TEXTURE_2D);
@@ -303,7 +304,6 @@ void drawSkybox(float size = 30) {
 
 void drawTrampoline() {
 	glPushMatrix();
-	glColor3f(0.2, 0.2, 0.8);
 	glRotatef(15, 1, 0, 0);
 	glBegin(GL_QUADS);
 	glNormal3f(0, 1, 0);
@@ -317,7 +317,7 @@ void drawTrampoline() {
 
 void display(void) 
 { 
-	float lpos[4] = {0., 10., 0., 1.0};  //light's position
+	float lpos[4] = {10., 20., 0., 1.0};  //light's position
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
@@ -336,15 +336,17 @@ void display(void)
 
 	glLightfv(GL_LIGHT0,GL_POSITION, lpos);   //Set light position
 
-	glDisable(GL_LIGHTING);			//Disable lighting when drawing floor.
+	glColor3f(1, 1, 1);
     drawFloor();
-
+	glDisable(GL_LIGHTING);
+	glColor3f(1, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	drawSkybox(100);
+	glEnable(GL_LIGHTING);
 
 	// Wood
 	glPushMatrix();
-	glColor3f(0.3, 0.3, 0.3);
+	glColor3f(1, 1, 1);
 	glTranslatef(0, rotationRadius * 1.75, 0);
 	glTranslatef(0, -rotationRadius / 2.0, 0);
 	glRotatef(vaseRotation + 90, 0, 0, 1);
@@ -370,10 +372,8 @@ void display(void)
 	glPopMatrix();
 
 	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
 
 	// Vase
-	glColor3f(1, 0.8, 0);
 	glPushMatrix();
 	glTranslatef(vasePosition[0], vasePosition[1], vasePosition[2]);
 	glRotatef(vaseRotation, 0, 0, 1);
@@ -383,7 +383,7 @@ void display(void)
 	glPopMatrix();
 
 	// Ball
-    glColor3f(1, 1, 1);
+    glColor3f(0.8, 0.8, 0);
 	glPushMatrix();
 	glTranslatef(ballPosition[0], ballPosition[1], ballPosition[2]);
 	glutSolidSphere(1, 20, 20);
@@ -395,6 +395,7 @@ void display(void)
 
 	// Trampolines
 	glPushMatrix();
+	glColor3f(0.7, 0.7, 0.7);
 	glTranslatef(ballBouncingPoint[0], ballBouncingPoint[1] - 0.5, 0.5-ballBouncingPoint[2]);
 	glRotatef(100, 1, 0, 0);
 	glutSolidCylinder(1.5, 2.5, 20, 1);
