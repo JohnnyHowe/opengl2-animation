@@ -18,30 +18,25 @@ float rotationRadius = 8;
 
 // Timing thing
 float timer = 0;	// between 0 and maxTimer
-float period = PI * 2 * rotationRadius * rotationRadius / GRAVITY;
-float timeScale = 0.5;
+float period = PI * 2 * sqrt(rotationRadius / GRAVITY);
+float timeScale = 1.5;
 float dt = 1.0 / 60.0;	// seconds
 
 // Camera things
-float cameraPositionDefault[3] = {0, 10, 40 };
+float cameraPositionDefault[3] = {0, 7, 40 };
 float cameraAngleDefault[2] = { -PI / 2, 0 };
 float cameraPosition[3] = {0, 0, 0 };
 float cameraAngle[2] = { 0, 0 };	// Horizontal and vertical in radians
 float rotationSpeed = 0.1;
 
 // Textures
-GLuint texture0;	// Skybox
-GLuint texture1;	// Marble
+GLuint textures[4];
 
 // Vase things
-const int vasePoints = 51;  // Total number of vertices on the base curve
+const int vasePoints = 12;  // Total number of vertices on the base curve
  
-float vasex_init[vasePoints] = { 3.5, 8, 8, 7.5, 6.7, 5, 5.5, 4, 4, 5, 5.6, 6.1, 6.8, 7.1, 7.5, 8, 8.4, 8.7, 9, 9.3,
-                      9.8, 10, 10.2, 10.4, 10.6, 10.9, 11, 11.1, 11.2, 11.3, 11.4, 11.3, 11.2, 11.1, 11, 10.5, 9.5, 8.2, 7, 6.2,
-                      6, 6.2, 6.8, 7.6, 8.5, 7, 6.1, 5.3, 4.7, 4.5, 3.5 };
-float vasey_init[vasePoints] = { 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                      19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                      39, 40, 41, 42, 43, 43, 42, 41, 40, 39, 0};
+float vasex_init[vasePoints] = { 0.8, 1.0, 0.95, 0.9, 0.8, 0.6, 0.6, 0.8, 0.9, 0.95, 1.0, 0.8 };
+float vasey_init[vasePoints] = { 0.5, 0.9, 1.0, 0.9, 0.8, 0.6, 0.4, 0.2, 0.1, 0.0, 0.1, 0.5 };
 float vasez_init[vasePoints] = { 0 };
 
 float rotationOrigin[3] = { 0, 10, 0 };
@@ -50,6 +45,8 @@ float vaseRotation = 0;
 
 // Ball
 float ballPosition[3];
+float ballTurningPoint[3] = { 0, 2, 0 };
+float ballBouncingPoint[3] = { 0, -9, 10 };
 
 // ================================================================================================
 // Other
@@ -109,14 +106,29 @@ void loadBMP(string filename)
 	delete imageData;
 }
 
-void loadTexture(GLuint txId, string filename)				
+void loadTextures()				
 {
-	glGenTextures(1, &txId); 				// Create a Texture object
-	glBindTexture(GL_TEXTURE_2D, txId);		//Use this texture
-    loadBMP(filename);
+	glGenTextures(2, textures); 				// Create a Texture object
+
+	glBindTexture(GL_TEXTURE_2D, textures[0]);		//Use this texture
+    loadBMP(THISDIR + "skybox.bmp");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//Set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
+
+	glBindTexture(GL_TEXTURE_2D, textures[1]);		//Use this texture
+    loadBMP(THISDIR + "grass.bmp");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+
+	glBindTexture(GL_TEXTURE_2D, textures[2]);		//Use this texture
+    loadBMP(THISDIR + "wood.bmp");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//Set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
 }
 
 // ================================================================================================
@@ -144,7 +156,6 @@ void drawAxes(float axisLength=10) {
 void drawVase() {
 
 	glTranslatef(0, 0.5, 0);
-	glScalef(1 / 11.4, 1 / 43.0, 1 / 11.4);	// scale to size of 1
 
 	// Init arrays
 	float vx[vasePoints], vy[vasePoints], vz[vasePoints];
@@ -190,20 +201,20 @@ void drawVase() {
 void drawFloor()
 {
 	glColor3f(0., 0.5,  0.);			//Floor colour
-
+	float y = -10;
 	float s = 50;
-	loadTexture(texture1, THISDIR + "marble.bmp");
 	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	glBegin(GL_QUADS);
 	  glNormal3f(0.0, 1.0, 0.0);   //Facing +z (Front side)
 	  glTexCoord2f(0., 0.);
-	  glVertex3f(-s, 0.0, -s);
+	  glVertex3f(-s, y, -s);
 	  glTexCoord2f(1., 0.);
-	  glVertex3f(s, 0.0, -s);
+	  glVertex3f(s, y, -s);
 	  glTexCoord2f(1.0, 1.0);
-	  glVertex3f(s, 0.0, s);
+	  glVertex3f(s, y, s);
 	  glTexCoord2f(0.0, 1.0);
-	  glVertex3f(-s, 0.0, s);
+	  glVertex3f(-s, y, s);
 	  glEnd();
 	  glDisable(GL_TEXTURE_2D);
 
@@ -218,7 +229,7 @@ void drawFloor()
 	//}
 }
 
-void drawTextureBox(float size=0.5) {
+void drawTextureBox(float size=0.5, float squash = 0) {
 	glPushMatrix();
 	
 	glEnable(GL_TEXTURE_2D);
@@ -259,14 +270,15 @@ void drawTextureBox(float size=0.5) {
 	glTexCoord2f(0.75, 2.0/3);
 	glVertex3f(-size, size, size);
 
+	float e = squash;
 	glTexCoord2f(0.5, 1);
-	glVertex3f(-size, size, size);
+	glVertex3f(-size, size-e, size);
 	glTexCoord2f(0.5, 2.0/3);
-	glVertex3f(size, size, size);
+	glVertex3f(size, size-e, size);
 	glTexCoord2f(0.25, 2.0/3);
-	glVertex3f(size, size, -size);
+	glVertex3f(size, size-e, -size);
 	glTexCoord2f(0.25, 1);
-	glVertex3f(-size, size, -size);
+	glVertex3f(-size, size-e, -size);
 
 	glTexCoord2f(0.25, 0);
 	glVertex3f(-size, -size, size);
@@ -286,6 +298,20 @@ void drawSkybox(float size = 30) {
 	glPushMatrix();
 	glTranslatef(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 	drawTextureBox(size);
+	glPopMatrix();
+}
+
+void drawTrampoline() {
+	glPushMatrix();
+	glColor3f(0.2, 0.2, 0.8);
+	glRotatef(15, 1, 0, 0);
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	glVertex3f(-1, 0, -1);
+	glVertex3f(1, 0, -1);
+	glVertex3f(1, 0, 1);
+	glVertex3f(-1, 0, 1);
+	glEnd();
 	glPopMatrix();
 }
 
@@ -313,59 +339,70 @@ void display(void)
 	glDisable(GL_LIGHTING);			//Disable lighting when drawing floor.
     drawFloor();
 
-	// TODO find less dumb way of doing this texture switching
-	loadTexture(texture0, THISDIR + "skybox.bmp");
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	drawSkybox(100);
 
-	//float s = 10;
-	//  float z2 = 10;
-	//loadTexture(texture0, THISDIR + "sun.bmp");
-	//glEnable(GL_TEXTURE_2D);
-	//glBegin(GL_QUADS);
-	//  glNormal3f(0.0, 0.0, 1);   //Facing +z (Front side)
-	//  glTexCoord2f(0., 0.);
-	//  glVertex3f(0.0, 0.0, z2);
-	//  glTexCoord2f(1., 0.);
-	//  glVertex3f(s, 0.0, z2);
-	//  glTexCoord2f(1.0, 1.0);
-	//  glVertex3f(s, s, z2);
-	//  glTexCoord2f(0.0, 1.0);
-	//  glVertex3f(0.0, s, z2);
-	//  glEnd();
-
-	// Vase
+	// Wood
 	glPushMatrix();
 	glColor3f(0.3, 0.3, 0.3);
 	glTranslatef(0, rotationRadius * 1.75, 0);
 	glTranslatef(0, -rotationRadius / 2.0, 0);
 	glRotatef(vaseRotation + 90, 0, 0, 1);
 	glTranslatef(0, rotationRadius / 2.0, 0);
-	glScalef(0.4, rotationRadius * 0.75, 0.4);
-	loadTexture(texture0, THISDIR + "wood.bmp");
+	glScalef(0.2, rotationRadius * 0.7, 0.2);
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	drawTextureBox();
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(0, rotationOrigin[1] - 1, 0);
+	glScalef(19, 1, 1);
+	drawTextureBox();
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(10, 0, 0);
+	glScalef(1, 20, 1);
+	drawTextureBox();
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(-10, 0, 0);
+	glScalef(1, 20, 1);
 	drawTextureBox();
 	glPopMatrix();
 
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);			//Enable lighting when drawing the teapot
 
+	// Vase
 	glColor3f(1, 0.8, 0);
 	glPushMatrix();
 	glTranslatef(vasePosition[0], vasePosition[1], vasePosition[2]);
 	glRotatef(vaseRotation, 0, 0, 1);
 	glRotatef(-90, 1, 0, 0);
-	glScalef(2, 4, 2);
+	glScalef(2, 3, 2);
 	drawVase();
 	glPopMatrix();
 
-	// Balls
+	// Ball
     glColor3f(1, 1, 1);
 	glPushMatrix();
 	glTranslatef(ballPosition[0], ballPosition[1], ballPosition[2]);
-	glutSolidSphere(0.2, 10, 10);
+	glutSolidSphere(1, 20, 20);
 	glPopMatrix();
 	glPushMatrix();
 	glTranslatef(ballPosition[0], ballPosition[1], -ballPosition[2]);
-	glutSolidSphere(0.2, 10, 10);
+	//glutSolidSphere(0.2, 10, 10);
+	glPopMatrix();
+
+	// Trampolines
+	glPushMatrix();
+	glTranslatef(ballBouncingPoint[0], ballBouncingPoint[1] - 0.5, 0.5-ballBouncingPoint[2]);
+	glRotatef(100, 1, 0, 0);
+	glutSolidCylinder(1.5, 2.5, 20, 1);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(ballBouncingPoint[0], ballBouncingPoint[1] - 0.5, -0.5+ballBouncingPoint[2]);
+	glRotatef(80, 1, 0, 0);
+	glutSolidCylinder(1.5, 2.5, 20, 1);
 	glPopMatrix();
 
 	glutSwapBuffers(); 
@@ -458,12 +495,25 @@ void moveObjects() {
 	vasePosition[1] = -sin(vaseAngle + PI / 2) * rotationRadius + rotationOrigin[1];
 	vasePosition[2] = rotationOrigin[2];
 
-	float ballInitialAngle = (PI / 2);
-	float ballAngle = ballInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
+	//float ballInitialAngle = (PI / 2);
+	//float ballAngle = ballInitialAngle * cos(sqrt(GRAVITY / rotationRadius) * timer);
 
-	ballPosition[2] = -cos(ballAngle + PI / 2) * rotationRadius + rotationOrigin[0];
-	ballPosition[1] = -sin(ballAngle + PI / 2) * rotationRadius + rotationOrigin[1];
-	ballPosition[0] = rotationOrigin[2];
+	//ballPosition[2] = -cos(ballAngle + PI / 2) * rotationRadius + rotationOrigin[0];
+	//ballPosition[1] = -sin(ballAngle + PI / 2) * rotationRadius + rotationOrigin[1];
+	//ballPosition[0] = rotationOrigin[2];
+
+	// Ball
+	float z;
+	if (timer < period / 2) {
+		z = (ballTurningPoint[2] - ballBouncingPoint[2]) + ballBouncingPoint[2] * (4 * timer) / period;
+	}
+	else {
+		z = (ballTurningPoint[2] + ballBouncingPoint[2]) - ballBouncingPoint[2] * (4 * (timer - period / 2)) / period;
+	}
+	float xc = (ballBouncingPoint[1] - ballTurningPoint[1]) / ((ballBouncingPoint[2] - ballTurningPoint[2]) * (ballBouncingPoint[2] - ballTurningPoint[2]));
+	float x = z - ballTurningPoint[2];
+	ballPosition[1] = xc * x * x + ballTurningPoint[1];
+	ballPosition[2] = z;
 }
 
 void timerFunc(int x) {
@@ -479,10 +529,9 @@ void timerFunc(int x) {
 
 void initialize(void)
 {
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(141.0/255, 177.0/255, 247.0/255, 1.0f);
 
-	loadTexture(texture0, THISDIR + "skybox.bmp");
-	loadTexture(texture1, THISDIR + "marble.bmp");
+	loadTextures();
 
 	glEnable(GL_LIGHTING);		//Enable OpenGL states
 	glEnable(GL_LIGHT0);
@@ -497,6 +546,8 @@ void initialize(void)
 
 int main(int argc, char **argv) 
 { 
+
+	cout << period;
 	glutInit(&argc, argv);            
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);  
 	glutInitWindowSize(600, 600);
